@@ -35,7 +35,6 @@ public class QueueService {
 				}
 			}
 			pQueue.add(request);
-			pQueue=Utility.sortQueue(pQueue);
 		}
 		else {
 			throw new RuntimeException("Ivalid Request ID");
@@ -44,11 +43,13 @@ public class QueueService {
 	}
 
 	public Queue<WorkOrder> getWorkOrder() {
+		pQueue=Utility.sortQueue(pQueue);
 		return pQueue;
 	}
 
 	public void deleteTop() {
 		if (!pQueue.isEmpty()) {
+			pQueue=Utility.sortQueue(pQueue);
 			WorkOrder topData = pQueue.peek();
 			pQueue.remove(topData);
 		}
@@ -58,19 +59,26 @@ public class QueueService {
 	}
 
 	public void deleteID(long requestID) {
+		boolean flag=false;
 		Iterator<WorkOrder> it = pQueue.iterator();
+		WorkOrder data;
 		while(it.hasNext()) {
-			WorkOrder data=it.next();
+			data=it.next();
 			long id = data.getRequestId();
 			if (id == requestID) {
+				flag=true;
 				pQueue.remove(data);
+				break;
 			}
 		}
-		throw new ResourceNotFoundException("ID : " + requestID + " doesn't exist");
+		if (!flag) {
+			throw new ResourceNotFoundException("ID : " + requestID + " doesn't exist");
+		}
 	}
 	
 	
 	public IndexResponse getWorkOrderIndex(long requestId) {
+		pQueue=Utility.sortQueue(pQueue);
 		Iterator<WorkOrder> it=pQueue.iterator();
 		long count=0;
 		boolean flag=false;
@@ -100,6 +108,7 @@ public class QueueService {
 		Date date = new Date();
 		long currentTime = date.getTime();
 		if (!pQueue.isEmpty()) {
+			pQueue=Utility.sortQueue(pQueue);
 			Iterator<WorkOrder> it=pQueue.iterator();
 			while(it.hasNext()) {
 				WorkOrder data=it.next();
