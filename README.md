@@ -34,14 +34,7 @@
 
    Method: GET
    
-   Body: {
-	"registration": "",
-	"colour": "",
-	"slot": 0,
-	"level": 0
-  }
-
-3. URI: /workorder/waittime
+6. URI: /workorder/waittime
 
    Method: GET
 
