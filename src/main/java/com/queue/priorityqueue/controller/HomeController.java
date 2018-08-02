@@ -35,9 +35,8 @@ public class HomeController {
 	}
 
 	@DeleteMapping("/workorder/delete")
-	public ResponseEntity<Void> deleteTop() {
-		qservice.deleteTop();
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<WorkOrder> deleteTop() {
+		return ResponseEntity.ok(qservice.deleteTop());
 	}
 
 	@GetMapping("/workorder")

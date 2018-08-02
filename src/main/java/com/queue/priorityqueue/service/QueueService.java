@@ -18,18 +18,17 @@ import com.queue.priorityqueue.util.Utility;
 @Service
 public class QueueService {
 
-
 	Queue<WorkOrder> pQueue = new LinkedList<>();
-	
+
 	@Scheduled(fixedRate = 1000)
 	public void scheduleTaskWithFixedRate() {
-		pQueue=Utility.sortQueue(pQueue);
-	    
+		pQueue = Utility.sortQueue(pQueue);
+
 	}
 
-	public void setData(WorkOrder request) {
+	public WorkOrder setData(WorkOrder request) {
 		long requestId = request.getRequestId();
-		if (requestId>0) {
+		if (requestId > 0) {
 			Date date = new Date();
 			long timeInMillis = date.getTime();
 			request.setTimeInMillis(timeInMillis);
@@ -42,36 +41,39 @@ public class QueueService {
 				}
 			}
 			pQueue.add(request);
-		}
-		else {
+		} else {
 			throw new RuntimeException("Invalid Request ID");
 		}
-	
+		return request;
+
 	}
 
 	public Queue<WorkOrder> getWorkOrder() {
 		return pQueue;
 	}
 
-	public void deleteTop() {
+	public WorkOrder deleteTop() {
 		if (!pQueue.isEmpty()) {
+			WorkOrder workOrder = new WorkOrder();
 			WorkOrder topData = pQueue.peek();
+			workOrder.setRequestId(topData.getRequestId());
+			workOrder.setDate(topData.getDate());
 			pQueue.remove(topData);
-		}
-		else {
+			return workOrder;
+		} else {
 			throw new RuntimeException("Queue is Empty");
 		}
 	}
 
-	public void deleteID(long requestID) {
-		boolean flag=false;
+	public boolean deleteID(long requestID) {
+		boolean flag = false;
 		Iterator<WorkOrder> it = pQueue.iterator();
 		WorkOrder data;
-		while(it.hasNext()) {
-			data=it.next();
+		while (it.hasNext()) {
+			data = it.next();
 			long id = data.getRequestId();
 			if (id == requestID) {
-				flag=true;
+				flag = true;
 				pQueue.remove(data);
 				break;
 			}
@@ -79,54 +81,57 @@ public class QueueService {
 		if (!flag) {
 			throw new ResourceNotFoundException("ID : " + requestID + " doesn't exist");
 		}
+		return flag;
 	}
-	
-	
+
 	public IndexResponse getWorkOrderIndex(long requestId) {
-		Iterator<WorkOrder> it=pQueue.iterator();
-		long count=0;
-		boolean flag=false;
-		while(it.hasNext()) {
-			WorkOrder data=it.next();
-			long id=data.getRequestId();
+		Iterator<WorkOrder> it = pQueue.iterator();
+		long count = 0;
+		boolean flag = false;
+		while (it.hasNext()) {
+			WorkOrder data = it.next();
+			long id = data.getRequestId();
 			if (id == requestId) {
-				flag=true;
+				flag = true;
 				break;
-			}
-			else {
+			} else {
 				count++;
 			}
 		}
 		if (flag) {
-			IndexResponse response=new IndexResponse();
+			IndexResponse response = new IndexResponse();
 			response.setRequestId(requestId);
 			response.setIndexNumber(count);
 			return response;
-		}else {
+		} else {
 			throw new ResourceNotFoundException("ID : " + requestId + " doesn't exist");
 		}
 	}
 
-	public Queue<MeanResponse> getWaitTime(){
-		Queue<MeanResponse> list=new LinkedList<>();
+	public Queue<MeanResponse> getWaitTime() {
+		Queue<MeanResponse> list = new LinkedList<>();
 		Date date = new Date();
 		long currentTime = date.getTime();
+		long registeredTime;
+		long timeDiff;
+		long avergaeTime;
 		if (!pQueue.isEmpty()) {
-			Iterator<WorkOrder> it=pQueue.iterator();
-			while(it.hasNext()) {
-				WorkOrder data=it.next();
-				long registeredTime=data.getTimeInMillis();
-				MeanResponse response=new MeanResponse();
+			int size = pQueue.size();
+			Iterator<WorkOrder> it = pQueue.iterator();
+			while (it.hasNext()) {
+				WorkOrder data = it.next();
+				registeredTime = data.getTimeInMillis();
+				MeanResponse response = new MeanResponse();
 				response.setRequestId(data.getRequestId());
-				long timeDiff=(currentTime-registeredTime)/1000;
-				response.setTimeInSec(timeDiff);
+				timeDiff = (currentTime - registeredTime) / 1000;
+				avergaeTime = timeDiff / size;
+				response.setTimeInSec(avergaeTime);
 				list.add(response);
 			}
-		}
-		else {
+		} else {
 			throw new RuntimeException("Queue is Empty");
 		}
-		
+
 		return list;
 	}
 }

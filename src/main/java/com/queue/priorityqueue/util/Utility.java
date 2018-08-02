@@ -37,40 +37,35 @@ public class Utility {
 		return sortedQueue;
 
 	}
-	
+
 	protected static List<WorkOrder> restSort(List<WorkOrder> restQueue) {
-		Date date= new Date();
+		Date date = new Date();
 		double time = date.getTime();
 		Iterator<WorkOrder> it = restQueue.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			WorkOrder data = it.next();
 			long requestID = data.getRequestId();
 			double registeredtime = data.getTimeInMillis();
-			double diff = (time - registeredtime)/ 1000;
-			
+			double diff = (time - registeredtime) / 1000;
+
 			if (requestID % 3 == 0) {
 				double timeInQueue = Math.max(3, diff * Math.log(diff));
 				data.setTimeInQueue(timeInQueue);
-				System.out.println(requestID + " time ============== "+ timeInQueue);
-			}
-			else if (requestID % 5 == 0) {
-				double timeInQueue = Math.max(4, 2*(diff * Math.log(diff)));
+			} else if (requestID % 5 == 0) {
+				double timeInQueue = Math.max(4, 2 * (diff * Math.log(diff)));
 				data.setTimeInQueue(timeInQueue);
-				System.out.println(requestID + " time ============== "+ timeInQueue);
-			}
-			else {
+			} else {
 				data.setTimeInQueue(diff);
-				System.out.println(requestID + " time ============== "+ diff);
 			}
 		}
-		
+
 		Collections.sort(restQueue, new Comparator<WorkOrder>() {
-		    @Override
-		    public int compare(WorkOrder o1, WorkOrder o2) {
-		        return (int) (o2.getTimeInQueue() - o1.getTimeInQueue());
-		    }
+			@Override
+			public int compare(WorkOrder o1, WorkOrder o2) {
+				return (int) (o2.getTimeInQueue() - o1.getTimeInQueue());
+			}
 		});
-		
+
 		return restQueue;
 	}
 
