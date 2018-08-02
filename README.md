@@ -8,7 +8,9 @@
   
 # API's
 
-1. URI: /workorder
+1. EndPoint to add work orders in Queue.
+   
+   URI: /workorder
 
    Method: POST
    
@@ -18,23 +20,32 @@
   "requestId": 5
 	}
    
-2. URI: /workorder/delete
+2. End Point to delete the top id fromthe Queue.
+   
+   URI: /workorder/delete
 
    Method: DELETE
 
-3. URI: /workorder
+3. EndPoint to get the Queue for work order.
+   
+   URI: /workorder
 
    Method: GET   
    
-4. URI: /workorder/{request_ID}/delete
+4. EndPoint to delete particualr id from the Queue.
+   
+   URI: /workorder/{request_ID}/delete
 
    Method: DELETE
    
-5. URI: /workorder/{request_ID}/index
+5. Endpoint to get the index of a particular id. (Index is starting from 0)
+   URI: /workorder/{request_ID}/index
 
    Method: GET
    
-6. URI: /workorder/waittime
+6. EndPoint to get the average (mean) number of seconds that each ID has been waiting in the Queue.
+
+   URI: /workorder/waittime
 
    Method: GET
 
