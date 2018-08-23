@@ -1,0 +1,33 @@
+Service Test
+
+	@Mock
+	private Repository repository;
+
+	@InjectMocks
+	private Service service;
+  
+  @Test
+	public void tEST() {
+
+		when().thenReturn();
+		Response response = service.METHOD_NAME;
+		assertNotNull();
+	}
+  
+  
+INTEGRATION TEST
+  @Autowired
+	private TestRestTemplate restTemplate;
+  @Test
+	public void METHOD() {
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.add("Authorization", "24");
+
+		HttpEntity<String> entity = new HttpEntity<>(requestHeaders);
+		ResponseEntity<MortgageApplResponse> response = restTemplate.exchange(
+				"uRI", HttpMethod.GET, entity, Response.class);
+		System.out.println("TEST===================================>" + response.getBody());
+		System.out.println(response.getStatusCode());
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
